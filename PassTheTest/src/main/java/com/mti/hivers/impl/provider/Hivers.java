@@ -1,11 +1,8 @@
 package com.mti.hivers.impl.provider;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public class Hivers {
 
@@ -19,11 +16,11 @@ public class Hivers {
     }
 
     public <T> void addProvider(Singleton<T> obj) {
-        singletons.put(obj.getType(), (Singleton<T>)obj);
+        singletons.put(obj.getType(), obj);
     }
 
     public <T> void addProvider(Prototype<T> obj) {
-        prototypes.put(obj.getType(), (Prototype<T>)obj);
+        prototypes.put(obj.getType(), obj);
     }
 
     public <T> T instanceOfOrThrow(Class<T> type) {
@@ -32,7 +29,7 @@ public class Hivers {
         }
         if (prototypes.containsKey(type))
         {
-            return (T)singletons.get(type).getObject();
+            return (T)prototypes.get(type).getCallable();
         }
         throw new RuntimeException("Instance not found");
     }
@@ -43,7 +40,7 @@ public class Hivers {
         }
         if (prototypes.containsKey(type))
         {
-            return Optional.of((T)singletons.get(type).getObject());
+            return Optional.of((T)prototypes.get(type).getCallable());
         }
         return Optional.empty();
     }

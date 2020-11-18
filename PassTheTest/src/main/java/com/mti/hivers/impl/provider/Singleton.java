@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 
 public class Singleton<T> {
 
-    public T object;
-    public Class<T> type;
+    private T object;
+    private Class<T> type;
 
     //called when the object is constructed
     public Singleton(Class<T> type, Object obj) {

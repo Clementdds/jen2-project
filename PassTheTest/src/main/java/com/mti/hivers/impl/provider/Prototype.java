@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 
 public class Prototype<T> {
 
-    public Callable<T> call;
-    public Class<T> type;
+    private Callable<T> call;
+    private Class<T> type;
 
     //called when calling the constructor function
     public Prototype(Class<T> type, Callable<T> call) {
