@@ -2,7 +2,7 @@ package com.mti.hivers.impl.provider;
 
 import java.util.concurrent.Callable;
 
-public class Prototype<T> {
+public class Prototype<T> implements Provider<T> {
 
     public T object;
     public Class<T> type;
@@ -21,5 +21,15 @@ public class Prototype<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public T getObject() {
+        return object;
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
     }
 }

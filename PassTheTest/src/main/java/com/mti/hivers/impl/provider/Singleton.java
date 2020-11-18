@@ -2,7 +2,7 @@ package com.mti.hivers.impl.provider;
 
 import java.util.concurrent.Callable;
 
-public class Singleton<T> {
+public class Singleton<T> implements Provider<T> {
 
     public T object;
     public Class<T> type;
@@ -21,5 +21,15 @@ public class Singleton<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public T getObject() {
+        return object;
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
     }
 }
