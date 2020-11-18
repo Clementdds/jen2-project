@@ -1,42 +1,49 @@
 package com.mti.hivers.impl.provider;
 
-import javax.management.InstanceNotFoundException;
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class Hivers {
 
     //list providers
-    private List<Provider> providers;
+    private Map<Class, Singleton> singletons;
+    private Map<Class, Prototype> prototypes;
 
     public Hivers() {
-        providers = new ArrayList<>();
+        singletons = new HashMap<>();
+        prototypes = new HashMap<>();
     }
 
     public <T> void addProvider(Singleton<T> obj) {
-        providers.add((Provider<T>)obj);
+        singletons.put(obj.getType(), (Singleton<T>)obj);
     }
 
     public <T> void addProvider(Prototype<T> obj) {
-        providers.add((Provider<T>)obj);
+        prototypes.put(obj.getType(), (Prototype<T>)obj);
     }
 
     public <T> T instanceOfOrThrow(Class<T> type) {
-        for (var provider: providers) {
-            if (provider.getType().getTypeName().equals(type.getTypeName())) {
-                return (T)provider.getObject();
-            }
+        if (singletons.containsKey(type)) {
+            return (T)singletons.get(type).getObject();
+        }
+        if (prototypes.containsKey(type))
+        {
+            return (T)singletons.get(type).getObject();
         }
         throw new RuntimeException("Instance not found");
     }
 
     public <T> Optional<T> instanceOf(Class<T> type) {
-        for (var provider: providers) {
-            if (provider.getType().getTypeName().equals(type.getTypeName())) {
-                return Optional.of((T)provider.getObject());
-            }
+        if (singletons.containsKey(type)) {
+            return Optional.of((T)singletons.get(type).getObject());
+        }
+        if (prototypes.containsKey(type))
+        {
+            return Optional.of((T)singletons.get(type).getObject());
         }
         return Optional.empty();
     }

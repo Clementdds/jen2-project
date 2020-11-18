@@ -2,33 +2,30 @@ package com.mti.hivers.impl.provider;
 
 import java.util.concurrent.Callable;
 
-public class Prototype<T> implements Provider<T> {
+public class Prototype<T> {
 
-    public T object;
+    public Callable<T> call;
     public Class<T> type;
 
-    //called when the object is constructed
-    public Prototype(Class<T> type, Object obj) {
-        this.object = (type.cast(obj));
-        this.type = type;
-    }
-
     //called when calling the constructor function
-    public Prototype(Class<T> type, Callable<T> obj) {
+    public Prototype(Class<T> type, Callable<T> call) {
         try {
-            this.object = obj.call();
+            this.call = call;
             this.type = type;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public T getObject() {
-        return object;
+    public T getCallable() {
+        try {
+            return call.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    @Override
     public Class<T> getType() {
         return type;
     }

@@ -37,7 +37,10 @@ class HiversTest {
         hivers.addProvider(new Singleton<>(Nested.class, new Nested(hivers.instanceOfOrThrow(TestService.class))));
 
         final var service = hivers.instanceOf(TestService.class).orElseThrow();
-        IntStream.of(5).forEach(i -> service.ping());
+        final var service2 = hivers.instanceOfOrThrow(Nested.class);
+
+        IntStream.range(0, 5).forEach(i -> service.ping());
+        service2.testService.ping();
     }
 
 }
