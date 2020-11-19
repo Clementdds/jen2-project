@@ -20,7 +20,9 @@ public class Pair<A, B> {
 
     @Override
     public boolean equals(final Object o) {
-        Pair p2 = (Pair)o;
-        return p2.left.equals(left) && p2.right.equals(right);
+        if (o instanceof Pair){
+            Pair p2 = (Pair)o;
+            return p2.left.equals(left) && p2.right.equals(right);
+        }
     }
 }
