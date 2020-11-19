@@ -1,14 +1,10 @@
 package fr.epita.hivers;
 
-import fr.epita.tfidf.DocParser;
+import fr.epita.tfidf.Parsing.DocParser;
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
 
 import org.jsoup.nodes.Document;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

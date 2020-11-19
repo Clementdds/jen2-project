@@ -1,4 +1,4 @@
-package fr.epita.tokenisation;
+package fr.epita.tfidf.tokenisation;
 
 public class Stemmer {
     private static final String[] suffixes = {

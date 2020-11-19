@@ -1,4 +1,4 @@
-package fr.epita.tokenisation;
+package fr.epita.tfidf.tokenisation;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package fr.epita.tfidf;
+package fr.epita.tfidf.Parsing;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
