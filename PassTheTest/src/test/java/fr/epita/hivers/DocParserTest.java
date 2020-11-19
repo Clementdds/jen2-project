@@ -12,12 +12,11 @@ public class DocParserTest {
 
     @Test
     public void ParseHtmlFromUrl() {
-        DocParser docParser = new DocParser("https://example.com/");
+        DocParser docParser = new DocParser("<p>An <a href='http://example.com/'><b>example</b></a> link.</p>");
         String text = docParser.getText();
 
         assertEquals(
-                "Example Domain This domain is for use in illustrative examples in documents. You may use this domain" +
-                        " in literature without prior coordination or asking for permission. More information...",
+                "An example link.",
                 text);
     }
 

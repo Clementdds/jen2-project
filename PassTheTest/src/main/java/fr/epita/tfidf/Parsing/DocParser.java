@@ -3,18 +3,12 @@ package fr.epita.tfidf.Parsing;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-
 public class DocParser {
 
     private Document doc = null;
 
-    public DocParser(String url) {
-        try {
-            this.doc = Jsoup.connect(url).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public DocParser(String fullText) {
+        doc = Jsoup.parse(fullText);
     }
 
     public DocParser(Document document) {
@@ -24,12 +18,8 @@ public class DocParser {
     /*
      * Setters
      */
-    public void setDoc(String url){
-        try {
-            this.doc = Jsoup.connect(url).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setDoc(String fullText){
+        doc = Jsoup.parse(fullText);
     }
 
     public void setDoc(Document document) {
