@@ -31,8 +31,7 @@ public class TFDocument {
         String textCleaned = docParser.getText();
         List<String> tokens = tokenizer.tokenize(textCleaned);
         List<String> words = new ArrayList<>(tokens);
-        Vectoriser vectoriser = new Vectoriser(words);
-        vectorWord = vectoriser.vectorise();
+        vectorWord = Vectoriser.vectorise(words);
     }
 
 }
