@@ -55,6 +55,8 @@ public class Tokenizer {
                 sb.setLength(0);
             }
         }
+        if (sb.length() > 0 && !stopWords.contains(sb.toString()))
+            output.add(sb.toString());
         return output;
     }
 
