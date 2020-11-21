@@ -39,6 +39,7 @@ public class Tokenizer {
         text = text.toLowerCase();
         List<String> output = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
+        Synonym syn = new Synonym();
         for (int i = 0; i < text.length(); i++)
         {
             char c = text.charAt(i);
@@ -52,13 +53,14 @@ public class Tokenizer {
                 String word = sb.toString();
                 if (!stopWords.contains(word)) {
                     word = Stemmer.stemWord(word);
+                    word = syn.getSynonym(word);
                     output.add(word);
                 }
                 sb.setLength(0);
             }
         }
         if (sb.length() > 0 && !stopWords.contains(sb.toString())){
-            output.add(Stemmer.stemWord(sb.toString()));
+            output.add(syn.getSynonym(Stemmer.stemWord(sb.toString())));
         }
         return output;
     }
