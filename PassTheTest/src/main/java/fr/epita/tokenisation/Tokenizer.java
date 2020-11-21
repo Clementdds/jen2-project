@@ -50,13 +50,16 @@ public class Tokenizer {
                 if (sb.length() == 0)
                     continue;
                 String word = sb.toString();
-                if (!stopWords.contains(word))
+                if (!stopWords.contains(word)) {
+                    word = Stemmer.stemWord(word);
                     output.add(word);
+                }
                 sb.setLength(0);
             }
         }
-        if (sb.length() > 0 && !stopWords.contains(sb.toString()))
-            output.add(sb.toString());
+        if (sb.length() > 0 && !stopWords.contains(sb.toString())){
+            output.add(Stemmer.stemWord(sb.toString()));
+        }
         return output;
     }
 
