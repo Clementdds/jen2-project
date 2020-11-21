@@ -13,16 +13,14 @@ public class Query {
 
     private final Indexer _indexer;
     private final Tokenizer _tokenizer;
-    private final Vectoriser _vectorizer;
 
     private Map<String, Double> idf;
     private Map<TFDocument, Map<String, Double>> tfidf;
 
-    public Query(final Indexer indexer, final Tokenizer tokenizer, final Vectoriser vectoriser)
+    public Query(final Indexer indexer, final Tokenizer tokenizer)
     {
         _indexer = indexer;
         _tokenizer = tokenizer;
-        _vectorizer = vectoriser;
         idf = new HashMap<>();
         tfidf = new HashMap<>();
     }
@@ -51,7 +49,7 @@ public class Query {
     public List<TFDocument> request(String query)
     {
         List<String> queryTokens = _tokenizer.tokenize(query);
-        var queryVector = _vectorizer.vectorise(queryTokens);
+        var queryVector = Vectoriser.vectorise(queryTokens);
         computeIdf();
         for (TFDocument doc : _indexer.docs)
         {
@@ -66,5 +64,7 @@ public class Query {
             }
             List<Double> valueVector = new ArrayList<>(vector.values());
         }
+
+        return null; //FIXME
     }
 }
