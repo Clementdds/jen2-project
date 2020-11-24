@@ -1,39 +1,23 @@
 package fr.epita.tfidf;
 
-import fr.epita.tfidf.tokenisation.Tokenizer;
-import fr.epita.tfidf.vectorisation.Vectoriser;
-
+import fr.epita.tfidf.vectorisation.Pair;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Query {
 
     private final Indexer _indexer;
-    private final Tokenizer _tokenizer;
 
     private final Map<String, Double> idf;
     private final Map<TFDocument, Map<String, Double>> tfidf;
 
-    public Query(final Indexer indexer, final Tokenizer tokenizer)
+    public Query(final Indexer indexer)
     {
         _indexer = indexer;
-        _tokenizer = tokenizer;
         idf = new HashMap<>();
         tfidf = new HashMap<>();
     }
-
-    /*
-    public List<Double> normalize(List<Double> w2v){
-        double norm = 0.0;
-        for(Double x: w2v){
-            norm += x*x;
-        }
-        norm = Math.sqrt(norm);
-        for(Double x: w2v){
-            x = x/norm;
-        }
-        return w2v;
-    }
-    */
 
     public Double getNorm(Collection<Double> w2v){
         double norm = 0.0;
@@ -64,9 +48,10 @@ public class Query {
     }
 
     private void computeTfIdf(){
+        // Vector normalise of docs in index
         for (TFDocument doc : _indexer.docs)
         {
-            Map<String, Double> vector = new HashMap<>(); /*tfidf.put(doc, new HashMap<>());*/
+            Map<String, Double> vector = new HashMap<>();
             var words = doc.vectorWord;
             for (var entry : words.entrySet())
             {
@@ -82,13 +67,39 @@ public class Query {
 
     public List<TFDocument> request(String query)
     {
-        //List<String> queryTokens = _tokenizer.tokenize(query);
+        // TF Doc query idf
+        TFDocument queryDoc = new TFDocument(query);
+        var queryWords = queryDoc.vectorWord;
+        Map<String, Double> queryVector = new HashMap<>();
+        for (var entry : queryWords.entrySet())
+        {
+            var kw = entry.getKey();
+            var kwidf = idf.get(kw);
+            var kwfq = entry.getValue().left;
+            queryVector.put(kw, kwidf * kwfq);
+        }
+        Map<String, Double> normalizeQueryVector = normalize(queryVector);
 
         computeIdf();
         computeTfIdf();
 
+        List<Pair<TFDocument, Double>> cosineList = new ArrayList<>();
+        for (var /* Map<String, Double> vectorized */ docVector : tfidf.entrySet()) {
+            double cos = 0;
+            for (var word : normalizeQueryVector.entrySet())
+            {
+                String kw = word.getKey();
+                if (!docVector.getValue().containsKey(kw))
+                    continue;
+                cos += word.getValue() * docVector.getValue().get(kw);
+            }
+            cosineList.add(new Pair<>(docVector.getKey(), cos));
+        }
 
+        cosineList.sort((p1, p2) -> - Double.compare(p1.right, p2.right));
 
-        return null; //FIXME
+        return cosineList.stream()
+                .map(e -> e.left)
+                .collect(Collectors.toList());
     }
 }
