@@ -1,5 +1,7 @@
 package fr.epita.broker.message;
 
+import fr.epita.broker.consumer.Group;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,12 @@ public class Topic {
         List<Long> result = new ArrayList<>();
         messages.forEach((x) -> result.add((long)this.addMessage(new Message(x), groupId)));
         return result;
+    }
+
+    public List<Message> getMessages(Group group){
+        int hash = group.groupId % partitions.size();
+
+        return partitions.get(hash).messages;
     }
 
     @Override
