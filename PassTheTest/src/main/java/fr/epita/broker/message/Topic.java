@@ -17,4 +17,28 @@ public class Topic {
         this.name = name;
         this.partitions = partitions;
     }
+
+    public int addMessage(Message message, int groupId){
+        int hash = groupId % partitions.size();
+
+        return partitions.get(hash).messages.size() - 1;
+    }
+
+    public List<Long> addMessages(List<String> messages, int groupId){
+        List<Long> result = new ArrayList<>();
+        messages.forEach((x) -> result.add((long)this.addMessage(new Message(x), groupId)));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof String){
+            return this.name.equals(obj);
+        }
+        if (obj instanceof Topic){
+            Topic topic = (Topic) obj;
+            return this.name.equals(topic.name);
+        }
+        return false;
+    }
 }

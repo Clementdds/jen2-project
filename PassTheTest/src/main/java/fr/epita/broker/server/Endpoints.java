@@ -10,19 +10,19 @@ import lombok.Data;
 
 import java.util.List;
 
-public class Endopints extends AbstractVerticle {
+public class Endpoints extends AbstractVerticle {
 
     private final BrokeService brokeService;
 
-    public Endopints(final BrokeService brokeService) {
+    public Endpoints(final BrokeService brokeService) {
         this.brokeService = brokeService;
     }
 
     @Override
     public void start() throws Exception {
+        initEndpoints();
+
         super.start();
-
-
     }
 
     private void initEndpoints() {
@@ -37,7 +37,7 @@ public class Endopints extends AbstractVerticle {
                     final var result = brokeService.postTopic(body.name, body.partitions);
 
                     ctx.response()
-                            .setStatusCode(HttpResponseStatus.OK.code())
+                            .setStatusCode(result.StatusCode)
                             .end(Json.encode(result));
                 });
 
@@ -61,7 +61,6 @@ public class Endopints extends AbstractVerticle {
                 });
     }
 
-
     @Data private static class PostTopicRequest {
         private String name;
         private int partitions;
@@ -73,5 +72,9 @@ public class Endopints extends AbstractVerticle {
 
     @Data private static class PostMessagesResponse {
         private List<Long> items;
+
+        public void setItems(List<Long> items) {
+            this.items = items;
+        }
     }
 }
