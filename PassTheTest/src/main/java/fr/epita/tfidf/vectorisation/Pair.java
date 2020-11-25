@@ -24,5 +24,6 @@ public class Pair<A, B> {
             Pair p2 = (Pair)o;
             return p2.left.equals(left) && p2.right.equals(right);
         }
+        return false;
     }
 }

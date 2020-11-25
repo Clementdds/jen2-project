@@ -19,7 +19,7 @@ public class Query {
         tfidf = new HashMap<>();
     }
 
-    public Double getNorm(Collection<Double> w2v){
+    private Double getNorm(Collection<Double> w2v){
         double norm = 0.0;
         for(Double x: w2v){
             norm += x*x;
@@ -27,7 +27,7 @@ public class Query {
         return Math.sqrt(norm);
     }
 
-    public Map<String, Double> normalize(Map<String, Double> vector){
+    private Map<String, Double> normalize(Map<String, Double> vector){
         double norm =  getNorm(vector.values());
         Map<String, Double> normalizeVector = new HashMap<>();
 
@@ -65,8 +65,15 @@ public class Query {
         }
     }
 
+    public void addDocument(TFDocument document) {
+        _indexer.addDocument(document);
+    }
+
     public List<TFDocument> request(String query)
     {
+        computeIdf();
+        computeTfIdf();
+
         // TF Doc query idf
         TFDocument queryDoc = new TFDocument(query);
         var queryWords = queryDoc.vectorWord;
@@ -80,9 +87,7 @@ public class Query {
         }
         Map<String, Double> normalizeQueryVector = normalize(queryVector);
 
-        computeIdf();
-        computeTfIdf();
-
+        // Cosinus
         List<Pair<TFDocument, Double>> cosineList = new ArrayList<>();
         for (var /* Map<String, Double> vectorized */ docVector : tfidf.entrySet()) {
             double cos = 0;
@@ -96,6 +101,7 @@ public class Query {
             cosineList.add(new Pair<>(docVector.getKey(), cos));
         }
 
+        // Sort descending
         cosineList.sort((p1, p2) -> - Double.compare(p1.right, p2.right));
 
         return cosineList.stream()
