@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import io.vertx.core.Vertx;
 
 public class BrokeService {
 
@@ -74,6 +75,17 @@ public class BrokeService {
         long waitTimeNb = Long.parseLong(wait);
         var currentHead = groupTopicPair.left.startingHead;
         List<String> result = new ArrayList<>();
+
+        /*
+         * Test
+         */
+
+
+
+        /*
+         * Current
+         */
+
         for (; currentHead < groupTopicPair.left.startingHead + Integer.parseInt(upTo) && currentHead < messages.size(); currentHead++) {
             Date date2 = new Date();
             long currentTimeMilli = date2.getTime();
