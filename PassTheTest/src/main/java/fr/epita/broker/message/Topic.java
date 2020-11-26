@@ -23,6 +23,7 @@ public class Topic {
     public int addMessage(Message message, int groupId){
         int hash = groupId % partitions.size();
 
+        partitions.get(hash).messages.add(message);
         return partitions.get(hash).messages.size() - 1;
     }
 
