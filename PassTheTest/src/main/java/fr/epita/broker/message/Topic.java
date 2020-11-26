@@ -26,6 +26,14 @@ public class Topic {
         this.nbrPartition = partitions.size();
     }
 
+    public void addPartition(){
+        this.partitions.add(new Partition());
+    }
+
+    public int getNbrPartition(){
+        return this.partitions.size();
+    }
+
     public int addMessage(Message message, int groupId){
         int hash = groupId % nbrPartition;
 

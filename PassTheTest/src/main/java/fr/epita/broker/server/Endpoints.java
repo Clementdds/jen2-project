@@ -69,16 +69,16 @@ public class Endpoints extends AbstractVerticle {
         /*
          * Post message
          */
-        router.route(HttpMethod.POST, "/:topicName/:groupId")
+        router.route(HttpMethod.POST, "/:topicName/:partitionId")
                 .handler(BodyHandler.create())
                 .handler(ctx -> {
                     final var json = ctx.getBodyAsString();
                     final var body = Json.decode(PostMessagesRequest.class, json);
 
                     final var topicName = ctx.request().getParam("topicName");
-                    final var groupId = ctx.request().getParam("groupId");
+                    final var partitionId = ctx.request().getParam("partitionId");
 
-                    final var result = brokeService.postMessages(body.messages, topicName, groupId);
+                    final var result = brokeService.postMessages(body.messages, topicName, partitionId);
 
                     final var response = new PostMessagesResponse();
                     response.setItems(result);

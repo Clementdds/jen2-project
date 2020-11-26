@@ -141,7 +141,7 @@ public class httpTest {
 
         //TEST FETCH MESSAGES
         request = HttpRequest.newBuilder(
-                URI.create("http://localhost:9999/1?upTo=5&wait=10"))
+                URI.create("http://localhost:9999/1?upTo=5&wait=11"))
                              .header("accept", "application/json")
                              .method("GET", body)
                              .build();
@@ -151,7 +151,7 @@ public class httpTest {
         Assertions.assertEquals("[\"message1\",\"message2\",\"message3\",\"message4\",\"message5\"]", response.body());
 
         request = HttpRequest.newBuilder(
-                URI.create("http://localhost:9999/0?upTo=5&wait=10"))
+                URI.create("http://localhost:9999/0?upTo=5&wait=12"))
                              .header("accept", "application/json")
                              .method("GET", body)
                              .build();
@@ -161,7 +161,7 @@ public class httpTest {
         Assertions.assertEquals("[\"message6\",\"message7\",\"message8\",\"message9\",\"message10\"]", response.body());
 
         request = HttpRequest.newBuilder(
-                URI.create("http://localhost:9999/1?upTo=5&wait=10"))
+                URI.create("http://localhost:9999/1?upTo=5&wait=13"))
                              .header("accept", "application/json")
                              .method("GET", body)
                              .build();

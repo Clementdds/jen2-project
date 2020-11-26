@@ -36,7 +36,7 @@ public class BrokeService {
     /*
      * Post messages
      */
-    public List<Long> postMessages(final List<String> messages, final String topicName, final String groupId) {
+    public List<Long> postMessages(final List<String> messages, final String topicName, final String partitionId) {
         var result = database.topics.stream().anyMatch(topic -> topic.name.equals(topicName));
         if (!result) {
             Topic newTopic = new Topic(topicName, 42);
@@ -46,13 +46,7 @@ public class BrokeService {
         if (topics.size() == 0) {
             return Collections.emptyList();
         } else {
-            result = database.groups.stream().anyMatch(group -> group.groupId == Integer.parseInt(groupId));
-            if (!result)
-            {
-                database.groups.add(new Group(Integer.parseInt(groupId)));
-            }
-            Topic topic = topics.get(0);
-            return topic.addMessages(messages, Integer.parseInt(groupId));
+            return topics.get(0).addMessages(messages, Integer.parseInt(partitionId));
         }
     }
 
@@ -74,16 +68,6 @@ public class BrokeService {
         long waitTimeNb = Long.parseLong(wait);
         var currentHead = groupTopicPair.left.startingHead;
         List<String> result = new ArrayList<>();
-
-        /*
-         * Test
-         */
-
-
-
-        /*
-         * Current
-         */
 
         for (; currentHead < groupTopicPair.left.startingHead + Integer.parseInt(upTo) && currentHead < messages.size(); currentHead++) {
             Date date2 = new Date();
@@ -113,7 +97,7 @@ public class BrokeService {
                 group = groups.get(0);
             }
             else {
-                group = new Group(database.groups.stream().map(group1 -> group1.groupId).collect(Collectors.toList()));
+                group = new Group(Integer.parseInt(groupId));
                 database.groups.add(group);
             }
             int result = database.subscription.addSubscription(group, topic);
