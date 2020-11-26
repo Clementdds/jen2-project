@@ -5,6 +5,8 @@ import fr.epita.tfidf.vectorisation.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 public class Subscription {
@@ -22,6 +24,7 @@ public class Subscription {
     }
 
     public void deleteSubscription(int id){
-        subscription.remove(new Consumer(id));
+        Consumer cons = subscription.keySet().stream().filter(consumer -> consumer.id == id).collect(Collectors.toList()).get(0);
+        subscription.remove(cons);
     }
 }

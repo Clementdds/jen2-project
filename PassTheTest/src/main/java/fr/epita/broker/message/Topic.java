@@ -9,19 +9,25 @@ public class Topic {
 
     public final String name;
     private final List<Partition> partitions;
+    private final int nbrPartition;
 
     public Topic(String name, int nbrPartition) {
         this.name = name;
-        this.partitions = new ArrayList<>(nbrPartition);
+        this.nbrPartition = nbrPartition;
+        this.partitions = new ArrayList<>();
+        for (int i = 0; i < nbrPartition; i++) {
+            this.partitions.add(new Partition());
+        }
     }
 
     public Topic(String name, List<Partition> partitions) {
         this.name = name;
         this.partitions = partitions;
+        this.nbrPartition = partitions.size();
     }
 
     public int addMessage(Message message, int groupId){
-        int hash = groupId % partitions.size();
+        int hash = groupId % nbrPartition;
 
         partitions.get(hash).messages.add(message);
         return partitions.get(hash).messages.size() - 1;

@@ -49,7 +49,7 @@ public class Endpoints extends AbstractVerticle {
         /*
          * Fetch message
          */
-        router.route(HttpMethod.GET, "/:subscriptionId?upTo=x&wait=y")
+        router.route(HttpMethod.GET, "/:subscriptionId*")
                 .handler(BodyHandler.create())
                 .handler(ctx -> {
                     final var subscriptionId = ctx.request().getParam("subscriptionId");

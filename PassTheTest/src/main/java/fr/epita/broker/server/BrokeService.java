@@ -24,7 +24,7 @@ public class BrokeService {
      * Create topic
      */
     public PostMessageResponse postTopic(final String name, final int partitions) {
-        Topic topic = new Topic(name, partitions);
+        Topic topic = new Topic(name, partitions == 0 ? 42 : partitions);
         boolean result = database.topics.contains(topic);
         if (result) {
             return new PostMessageResponse(409, "Topic already exist");
@@ -37,7 +37,8 @@ public class BrokeService {
      * Post messages
      */
     public List<Long> postMessages(final List<String> messages, final String topicName, final String groupId) {
-        if (!database.topics.contains(topicName)) {
+        var result = database.topics.stream().anyMatch(topic -> topic.name.equals(topicName));
+        if (!result) {
             Topic newTopic = new Topic(topicName, 42);
             database.topics.add(newTopic);
         }
@@ -45,6 +46,11 @@ public class BrokeService {
         if (topics.size() == 0) {
             return Collections.emptyList();
         } else {
+            result = database.groups.stream().anyMatch(group -> group.groupId == Integer.parseInt(groupId));
+            if (!result)
+            {
+                database.groups.add(new Group(Integer.parseInt(groupId)));
+            }
             Topic topic = topics.get(0);
             return topic.addMessages(messages, Integer.parseInt(groupId));
         }
@@ -57,7 +63,8 @@ public class BrokeService {
         Date date = new Date();
         long startTimeMilli = date.getTime();
 
-        Consumer consumer = new Consumer(Integer.parseInt(subscriptionId));
+        //Consumer consumer = new Consumer(Integer.parseInt(subscriptionId));
+        Consumer consumer = database.subscription.subscription.keySet().stream().filter(cons -> cons.id == Integer.parseInt(subscriptionId)).collect(Collectors.toList()).get(0);
         if (!database.subscription.subscription.containsKey(consumer)){
             return new GetMessageResponse(404, null);
         }
@@ -67,7 +74,7 @@ public class BrokeService {
         long waitTimeNb = Long.parseLong(wait);
         var currentHead = groupTopicPair.left.startingHead;
         List<String> result = new ArrayList<>();
-        for (int i = currentHead; currentHead < Integer.parseInt(upTo); currentHead++) {
+        for (; currentHead < groupTopicPair.left.startingHead + Integer.parseInt(upTo) && currentHead < messages.size(); currentHead++) {
             Date date2 = new Date();
             long currentTimeMilli = date2.getTime();
             if ((currentTimeMilli - startTimeMilli) >=  waitTimeNb) {
@@ -84,9 +91,6 @@ public class BrokeService {
      * Create consumer to a group
      */
     public PostSubscriptionResponse postSubscription(final String topicName, final String groupId) {
-        if (!database.topics.contains(topicName)) {
-            return new PostSubscriptionResponse(404, null, null, "Topic does not exist");
-        }
         List<Topic> topics = database.topics.stream().filter(topic_ -> topic_.name.equals(topicName)).collect(Collectors.toList());
         if (topics.size() == 0) {
             return new PostSubscriptionResponse(404, null, null, "Topic does not exist");
@@ -98,7 +102,8 @@ public class BrokeService {
                 group = groups.get(0);
             }
             else {
-                group = new Group();
+                group = new Group(database.groups.stream().map(group1 -> group1.groupId).collect(Collectors.toList()));
+                database.groups.add(group);
             }
             int result = database.subscription.addSubscription(group, topic);
             return new PostSubscriptionResponse(200, groupId, result, null);
@@ -110,7 +115,8 @@ public class BrokeService {
      */
     public DeleteSubscriptionResponse deleteSubscription(final String subscriptionId) {
         int subId = Integer.parseInt(subscriptionId);
-        if (!database.subscription.subscription.containsKey(subId)) {
+        var found = database.subscription.subscription.keySet().stream().anyMatch(consumer -> consumer.id == subId);
+        if (!found) {
             return new DeleteSubscriptionResponse(404, "Not found");
         }
         database.subscription.deleteSubscription(subId);

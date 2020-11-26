@@ -10,10 +10,18 @@ public class Group {
     public List<Consumer> consumers;
     public int startingHead;
 
-    public Group() {
+    public Group(List<Integer> createdIdGroups) {
         this.consumers = new ArrayList<>();
         this.startingHead = 0;
+        while (createdIdGroups.stream().anyMatch(listid -> listid >= id))
+            id++;
         this.groupId = id++;
+    }
+
+    public Group(int groupId) {
+        this.consumers = new ArrayList<>();
+        this.startingHead = 0;
+        this.groupId = groupId;
     }
 
     public Group(List<Consumer> consumers, int startingHead) {
