@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class VectorizeTest {
 
     @Test
@@ -26,6 +24,6 @@ public class VectorizeTest {
 
         Map<String, Pair<Float, List<Integer>>> resultMap = Vectoriser.vectorise(testList);
 
-        Assertions.assertTrue(testMap.equals(resultMap));
+        Assertions.assertEquals(resultMap, testMap);
     }
 }

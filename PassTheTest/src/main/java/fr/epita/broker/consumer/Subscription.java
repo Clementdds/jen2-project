@@ -5,7 +5,6 @@ import fr.epita.tfidf.vectorisation.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 

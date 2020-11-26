@@ -3,7 +3,6 @@ package fr.epita.broker.server;
 import fr.epita.utils.Json;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
@@ -57,7 +56,10 @@ public class Endpoints extends AbstractVerticle {
                     final var upTo = ctx.request().getParam("upTo");
                     final var wait = ctx.request().getParam("wait");
 
-                    final var result = brokeService.fetchMessages(subscriptionId, upTo, wait);
+                    final var finalUpTo = upTo != null ? upTo : "100";
+                    final var finalWait = wait != null ? wait : "100";
+
+                    final var result = brokeService.fetchMessages(subscriptionId, finalUpTo, finalWait);
 
                     ctx.response()
                             .setStatusCode(result.StatusCode)
@@ -119,16 +121,19 @@ public class Endpoints extends AbstractVerticle {
         return router;
     }
 
-    @Data private static class PostTopicRequest {
+    @Data
+    private static class PostTopicRequest {
         private String name;
         private int partitions;
     }
 
-    @Data private static class PostMessagesRequest {
+    @Data
+    private static class PostMessagesRequest {
         private List<String> messages;
     }
 
-    @Data private static class PostMessagesResponse {
+    @Data
+    private static class PostMessagesResponse {
         private List<Long> items;
 
         public void setItems(List<Long> items) {

@@ -1,11 +1,9 @@
 package fr.epita.broker;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.epita.broker.database.Database;
 import fr.epita.broker.server.BrokeService;
 import fr.epita.broker.server.Endpoints;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
